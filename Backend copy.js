@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 24007
 
 app.use(express.static('kepek'))
 app.use(express.json())
@@ -13,10 +13,10 @@ app.get('/', (req, res) => {
 app.get('/orszagok', (req, res) => {
     const mysql = require('mysql')
     const connection = mysql.createConnection({
-      host: 'localhost',
-      user: 'root',
-      password: '',
-      database: 'utazas'
+      host: '192.168.0.200',
+      user: 'u65_t8lXdWlwJn',
+      password: 'J==ECdAAr0ON!!=k7WZo!XY8',
+      database: 's65_db'
     })
     
     connection.connect()
@@ -37,9 +37,9 @@ app.get('/nyaralas', (req, res) => {
     const mysql = require('mysql')
     const connection = mysql.createConnection({
       host: 'localhost',
-      user: 'root',
-      password: '',
-      database: 'utazas'
+      user: 'boros.tamas.attila.597@dszcbaross.edu.hu',
+      password: 'Covid-19',
+      database: 's65_db'
     })
     
     connection.connect()
@@ -57,5 +57,5 @@ app.get('/nyaralas', (req, res) => {
 
 
 app.listen(port, () => {
-  console.log(`Example app listening on port${port}`)
+  console.log(`Example app listening on port 192.168.0.200:${port}`)
 })
