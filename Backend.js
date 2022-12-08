@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 
-app.use(express.static('kepek'))
+//app.use(express.static('kepek'))
 app.use(express.json())
 
 app.get('/', (req, res) => {
@@ -30,29 +30,18 @@ app.get('/orszagok', (req, res) => {
     connection.end()
   })
 
-
-//-------------------------------
-//------------------------ országok lekérdezése
-app.get('/nyaralas', (req, res) => {
-    const mysql = require('mysql')
-    const connection = mysql.createConnection({
-      host: 'localhost',
-      user: 'root',
-      password: '',
-      database: 'utazas'
-    })
-    
-    connection.connect()
-    
-    connection.query('SELECT * from nyaralas', (err, rows, fields) => {
-      if (err) throw err
-    
-      res.send(rows)
+//------KERES
+  app.post('/keres', (req, res) => {
+    kapcsolat()
+	let parancs="select * from nyaralas like '"+req.body.bevitel1+"'"
+    connection.query(parancs, (err, rows, fields) => {
+      if (err) console.log(err)
+		else
+			res.send(rows)
     })
     
     connection.end()
   })
-
 
 
 
