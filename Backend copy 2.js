@@ -77,16 +77,16 @@ app.post('/felhasznalok', (req, res) => {
     }
   //  res.send(rows)
    if(rows.length ===0){
-    res.status(401).send({succes: true, message: 0})
+    res.status(401).send({succes: false, message: 'Helytelen felhasználó név'})
     return
   }
   if(req.body.password !==rows[0].password){
     res.status(401).send({
-    succes: true, message: -1})
+    succes: false, message: 'Helytelen jelszó'})
     return
   }
   res.send({
-    succes: true, message: req.body.felhasznalo_id})
+    succes: true, message: 'Sikeres bejelentkezés!'})
   })
   
   connection.end()
@@ -106,7 +106,7 @@ app.get('/ajanlat', (req, res) => {
   
   connection.connect()
   
-  connection.query('SELECT * from ajanlat_varos', (err, rows, fields) => {
+  connection.query('SELECT * from ajanlat', (err, rows, fields) => {
     if (err) throw err
   
     res.send(rows)
