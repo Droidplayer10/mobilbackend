@@ -21,7 +21,7 @@ app.get('/orszagok', (req, res) => {
     
     connection.connect()
     
-    connection.query('SELECT * from orszagok', (err, rows, fields) => {
+    connection.query('select * from orszagok,varosok WHERE orszag_id_nev=orszag_id limit 10', (err, rows, fields) => {
       if (err) throw err
     
       res.send(rows)
@@ -30,11 +30,8 @@ app.get('/orszagok', (req, res) => {
     connection.end()
   })
 
-
-/*
-  app.post('/felhasznalok', (req, res) => {
+  app.get('/varosok', (req, res) => {
     const mysql = require('mysql')
-    
     const connection = mysql.createConnection({
       host: 'localhost',
       user: 'root',
@@ -44,7 +41,7 @@ app.get('/orszagok', (req, res) => {
     
     connection.connect()
     
-    connection.query('SELECT * from felhasznalok', (err, rows, fields) => {
+    connection.query('SELECT * from varosok', (err, rows, fields) => {
       if (err) throw err
     
       res.send(rows)
@@ -52,7 +49,8 @@ app.get('/orszagok', (req, res) => {
     
     connection.end()
   })
-*/
+
+
 
 
 app.post('/felhasznalok', (req, res) => {
@@ -77,16 +75,16 @@ app.post('/felhasznalok', (req, res) => {
     }
   //  res.send(rows)
    if(rows.length ===0){
-    res.status(401).send({succes: true, message: 0})
+    res.status(401).send({succes: false, message: 'Helytelen felhasználó név'})
     return
   }
   if(req.body.password !==rows[0].password){
     res.status(401).send({
-    succes: true, message: -1})
+    succes: false, message: 'Helytelen jelszó'})
     return
   }
   res.send({
-    succes: true, message: req.body.felhasznalo_id})
+    succes: true, message: 'Sikeres bejelentkezés!'})
   })
   
   connection.end()
