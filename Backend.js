@@ -92,6 +92,49 @@ app.post('/felhasznalok', (req, res) => {
 
 
 
+app.post('/felvitel', (req, res) => {
+  const mysql = require('mysql')
+  
+  const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'utazas1'
+  })
+  
+  connection.connect()
+  
+
+  connection.query("INSERT INTO felhasznaloutazas VALUES (NULL, 123456, '"+req.body.ajanlathonnanvaros+"', '"+req.body.itemajanlatvarosnev+"', '"+req.body.selectedDate+"', '"+req.body.returnDate+"', 5) ",
+
+  (err, rows, fields) => {
+    if (err){
+    //throw err
+  res.status(500).send(err)
+  return
+    }
+  //  res.send(rows)
+   if(rows.length ===0){
+    res.status(401).send({succes: false, message: 'Helytelen felhasználó név'})
+    return
+  }
+  if(req.body.password !==rows[0].password){
+    res.status(401).send({
+    succes: false, message: 'Helytelen jelszó'})
+    return
+  }
+  res.send({
+    succes: true, message: 'Sikeres bejelentkezés!'})
+  })
+  
+  connection.end()
+})
+
+
+
+
+
+
   //------------------------ Ajánlatok lekérdezése
 app.get('/ajanlat', (req, res) => {
   const mysql = require('mysql')
