@@ -55,7 +55,7 @@ app.get('/orszagok', (req, res) => {
   
     connection.connect()
   
-    connection.query("INSERT INTO felhasznaloutazas VALUES (NULL, '"+req.body.felhasznaloId+"', '"+req.body.ajanlathonnanvaros+"', '"+req.body.itemajanlatvarosnev+"', '"+req.body.selectedDate+"', '"+req.body.returnDate+"', '"+req.body.selectedValue+"') ",
+    connection.query("INSERT INTO felhasznaloutazas VALUES (NULL,'"+req.body.felhasznaloId+"' ,'"+req.body.ajanlathonnanvaros+"', '"+req.body.itemajanlatvarosnev+"', '"+req.body.selectedDate+"', '"+req.body.returnDate+"', '"+req.body.selectedValue+"') ",
     (err, rows, fields) => {
       if (err) {
         res.status(500).send(err)
