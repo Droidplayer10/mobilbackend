@@ -24,24 +24,37 @@ app.get('/', (req, res) => {
 
 //------------------------ országok lekérdezése
 app.get('/orszagok', (req, res) => {
-    const mysql = require('mysql')
-    const connection = mysql.createConnection({
-      host: 'localhost',
-      user: 'root',
-      password: '',
-      database: 'utazas1'
-    })
-    
-    connection.connect()
-    
-    connection.query('SELECT * from orszagok', (err, rows, fields) => {
-      if (err) throw err
-    
-      res.send(rows)
-    })
-    
-    connection.end()
-  })
+  const mysql = require('mysql');
+  const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'utazas1'
+  });
+
+  connection.connect();
+
+  const query = 'SELECT orszagok.orszag_id, orszagok.orszag_nev, orszagok.orszag_kep, varosok.varos_nev FROM orszagok JOIN varosok varosok ON orszagok.orszag_id = varosok.orszag_id_nev ORDER BY orszagok.orszag_nev, varosok.varos_nev;';
+  connection.query(query, (err, rows, fields) => {
+    if (err) throw err;
+
+    const data = rows.reduce((acc, row) => {
+      const { orszag_id, orszag_nev, orszag_kep, varos_nev } = row;
+      const countryIndex = acc.findIndex((item) => item.orszag_id === orszag_id);
+      if (countryIndex >= 0) {
+        acc[countryIndex].varosok.push(varos_nev);
+      } else {
+        acc.push({ orszag_id, orszag_nev, orszag_kep, varosok: [varos_nev] });
+      }
+      return acc;
+    }, []);
+
+    res.send(data);
+  });
+
+  connection.end();
+});
+
 
   app.post('/felvitel', (req, res) => {
     const mysql = require('mysql')
@@ -81,8 +94,8 @@ app.post('/felhasznalok', (req, res) => {
   
   connection.connect()
   
-  connection.query('SELECT * from felhasznalok where felhasznalo_id =?',
-  [req.body.felhasznalo_id],
+  connection.query('SELECT * from felhasznalok where felhasznalo_id =? and felhasznalo_jelszo =?',
+  [req.body.felhasznalo_id, req.body.felhasznalo_jelszo],
   (err, rows, fields) => {
     if (err){
     //throw err
@@ -94,7 +107,7 @@ app.post('/felhasznalok', (req, res) => {
     res.status(401).send({succes: false, message: 'Helytelen felhasználó név'})
     return
   }
-  if(req.body.password !==rows[0].password){
+  if(req.body.felhasznalo_jelszo !==rows[0].felhasznalo_jelszo){
     res.status(401).send({
     succes: false, message: 'Helytelen jelszó'})
     return
@@ -105,6 +118,30 @@ app.post('/felhasznalok', (req, res) => {
   
   connection.end()
 })
+
+
+
+  //------------------------ Ajánlatok lekérdezése
+app.get('/ajanlat', (req, res) => {
+  const mysql = require('mysql')
+  const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'utazas1'
+  })
+  
+  connection.connect()
+  
+  connection.query('SELECT * from ajanlat_varos', (err, rows, fields) => {
+    if (err) throw err
+  
+    res.send(rows)
+  })
+  
+  connection.end()
+})
+
 
 
 
